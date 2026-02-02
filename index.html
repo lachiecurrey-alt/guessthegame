@@ -63,7 +63,7 @@ const games = [
   {name:"Animal Crossing", platforms:{xbox:false,playstation:false,pc:false,switch:true,ios:false,android:false},multiplayer:true},
   {name:"The Sims", platforms:{xbox:true,playstation:true,pc:true,switch:true,ios:false,android:false},multiplayer:true},
   {name:"Candy Crush Saga", platforms:{xbox:false,playstation:false,pc:false,switch:false,ios:true,android:true},multiplayer:false},
-  // ... Add more up to 100 if needed
+  // Add more games up to 100 as needed
 ];
 
 // ====== Questions ======
@@ -132,6 +132,11 @@ function giveUp(){
   log(`🏳️ Gave up! The game was 🎯 ${secretGame.name}`);
   log(`Questions asked: ${questionsAsked}`);
 }
+</script>
+
+<script>
+// ===== Show start page by default =====
+startPage.style.display="block";
 </script>
 
 </body>
