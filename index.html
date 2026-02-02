@@ -1,27 +1,158 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Guess The Game</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>🎮 Guess The Game</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #1e90ff;
+  color: white;
+  text-align: center;
+}
+button, input, select {
+  width: 90%;
+  max-width: 400px;
+  padding: 12px;
+  margin: 8px auto;
+  font-size: 18px;
+  border-radius: 10px;
+  border: none;
+}
+button {
+  background: #ffcc00;
+  color: black;
+  font-weight: bold;
+}
+#log {
+  background: rgba(0,0,0,0.2);
+  margin: 15px auto;
+  padding: 10px;
+  max-width: 400px;
+  border-radius: 10px;
+  text-align: left;
+  max-height: 300px;
+  overflow-y: auto;
+}
+</style>
 </head>
 
 <body>
 
+<!-- START PAGE -->
 <div id="startPage">
   <h1>🎮 Guess The Game 🎮</h1>
+  <p>Ask yes/no questions and guess the game!</p>
   <button id="startBtn">🚀 Start Game</button>
 </div>
 
+<!-- GAME PAGE -->
 <div id="gamePage" style="display:none;">
-  <h2>Game Page Loaded</h2>
+  <h2>🎯 Game Started</h2>
+
+  <select id="questionSelect"></select>
+  <button id="askBtn">❓ Ask Question</button>
+
+  <input id="guessInput" placeholder="Type your guess">
+  <button id="guessBtn">🎯 Guess</button>
+
+  <button id="giveUpBtn">🏳️ Give Up</button>
+
+  <div id="log"></div>
 </div>
 
 <script>
-document.getElementById("startPage").style.display = "block";
+/* ---------- DATA ---------- */
+
+const games = [
+  {name:"Minecraft", mobile:true, console:true, pc:true, multiplayer:true},
+  {name:"Fortnite", mobile:true, console:true, pc:true, multiplayer:true},
+  {name:"Call of Duty", mobile:false, console:true, pc:true, multiplayer:true},
+  {name:"FIFA", mobile:true, console:true, pc:true, multiplayer:true},
+  {name:"2K", mobile:true, console:true, pc:true, multiplayer:true},
+  {name:"Among Us", mobile:true, console:true, pc:true, multiplayer:true},
+  {name:"Roblox", mobile:true, console:true, pc:true, multiplayer:true},
+  {name:"GTA", mobile:false, console:true, pc:true, multiplayer:true},
+  {name:"The Sims", mobile:false, console:true, pc:true, multiplayer:false},
+  {name:"Animal Crossing", mobile:false, console:true, pc:false, multiplayer:true},
+  {name:"Subway Surfers", mobile:true, console:false, pc:false, multiplayer:false},
+  {name:"Temple Run", mobile:true, console:false, pc:false, multiplayer:false},
+  {name:"Candy Crush", mobile:true, console:false, pc:false, multiplayer:false},
+  {name:"Clash of Clans", mobile:true, console:false, pc:false, multiplayer:true},
+  {name:"PUBG", mobile:true, console:true, pc:true, multiplayer:true},
+  {name:"Rocket League", mobile:false, console:true, pc:true, multiplayer:true},
+  {name:"Valorant", mobile:false, console:false, pc:true, multiplayer:true},
+  {name:"Counter-Strike", mobile:false, console:false, pc:true, multiplayer:true}
+];
+
+const questions = [
+  {text:"Is it a mobile game?", key:"mobile"},
+  {text:"Is it on console?", key:"console"},
+  {text:"Is it on PC?", key:"pc"},
+  {text:"Is it multiplayer?", key:"multiplayer"}
+];
+
+/* ---------- STATE ---------- */
+
+let secretGame = null;
+let questionCount = 0;
+
+/* ---------- ELEMENTS ---------- */
+
+const startPage = document.getElementById("startPage");
+const gamePage = document.getElementById("gamePage");
+const logDiv = document.getElementById("log");
+const questionSelect = document.getElementById("questionSelect");
+
+/* ---------- SETUP ---------- */
+
+questions.forEach(q => {
+  const opt = document.createElement("option");
+  opt.value = q.key;
+  opt.textContent = q.text;
+  questionSelect.appendChild(opt);
+});
+
+/* ---------- FUNCTIONS ---------- */
+
+function log(msg) {
+  logDiv.innerHTML += `<div>${msg}</div>`;
+  logDiv.scrollTop = logDiv.scrollHeight;
+}
+
 document.getElementById("startBtn").onclick = () => {
-  document.getElementById("startPage").style.display = "none";
-  document.getElementById("gamePage").style.display = "block";
+  secretGame = games[Math.floor(Math.random() * games.length)];
+  questionCount = 0;
+  logDiv.innerHTML = "";
+  startPage.style.display = "none";
+  gamePage.style.display = "block";
+  log("🎮 Game started! Ask a question.");
+};
+
+document.getElementById("askBtn").onclick = () => {
+  questionCount++;
+  const key = questionSelect.value;
+  const answer = secretGame[key] ? "Yes" : "No";
+  log(`❓ Q${questionCount}: ${questionSelect.selectedOptions[0].text} → ${answer}`);
+};
+
+document.getElementById("guessBtn").onclick = () => {
+  const guess = document.getElementById("guessInput").value.trim();
+  if (!guess) return;
+  if (guess.toLowerCase() === secretGame.name.toLowerCase()) {
+    log(`✅ CORRECT! It was 🎉 ${secretGame.name}`);
+    log(`🏆 You won in ${questionCount} questions`);
+  } else {
+    log(`❌ Guess: ${guess}`);
+  }
+  document.getElementById("guessInput").value = "";
+};
+
+document.getElementById("giveUpBtn").onclick = () => {
+  log(`🏳️ You gave up! The game was 🎯 ${secretGame.name}`);
+  log(`Questions asked: ${questionCount}`);
 };
 </script>
 
