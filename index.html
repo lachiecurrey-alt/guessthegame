@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>🎮 Guess The Game 🎮</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { background:#1e90ff; color:white; font-family:Arial,sans-serif; padding:20px; margin:0; }
+    h1,h3{text-align:center;margin-bottom:15px;}
+    select,input{font-size:18px;padding:12px;margin:6px 0;border-radius:8px;border:none;width:100%;box-sizing:border-box;}
+    button{font-size:20px;padding:14px;border-radius:12px;border:none;cursor:pointer;margin:6px 0;width:100%;background:#ffcc00;color:#000;}
+    #log{margin-top:20px;max-height:300px;overflow-y:auto;padding:10px;background:rgba(0,0,0,0.2);border-radius:12px;}
+    li{margin-bottom:8px;line-height:1.5;}
+    @media(min-width:500px){select,input,button{width:50%}#log{max-height:400px}}
+    #startPage,#gamePage{display:none;}
+  </style>
+</head>
+<body>
+
+<!-- Start Page -->
+<div id="startPage">
+  <h1>🎮 Guess The Game 🎮</h1>
+  <button id="startBtn">🚀 Start Game!</button>
+</div>
+
+<!-- Game Page -->
+<div id="gamePage">
+  <h1>🎮 Guess The Game 🎮</h1>
+
+  <h3>Ask a Question</h3>
+  <select id="questionSelect"></select>
+  <button onclick="askQuestion()">❓ Ask Question</button>
+
+  <h3>Make a Guess</h3>
+  <input id="guessInput" placeholder="Type game name">
+  <button onclick="makeGuess()">🎯 Make Guess</button>
+
+  <button onclick="giveUp()">🏳️ Give Up</button>
+
+  <h3>Game Log</h3>
+  <ul id="log"></ul>
+</div>
+
+<script>
+// ====== Data ======
+const games = [
+  {name:"Temple Run", platforms:{xbox:false,playstation:false,pc:false,switch:false,ios:true,android:true},multiplayer:false},
+  {name:"Candy Crush", platforms:{xbox:false,playstation:false,pc:false,switch:false,ios:true,android:true},multiplayer:false},
+  {name:"Hill Climb Racing", platforms:{xbox:false,playstation:false,pc:false,switch:false,ios:true,android:true},multiplayer:false},
+  {name:"Kahoot", platforms:{xbox:false,playstation:false,pc:true,switch:false,ios:true,android:true},multiplayer:true},
+  {name:"Gartic Phone", platforms:{xbox:false,playstation:false,pc:true,switch:false,ios:true,android:true},multiplayer:true},
+  {name:"Minecraft", platforms:{xbox:true,playstation:true,pc:true,switch:true,ios:true,android:true},multiplayer:true},
+  {name:"Call of Duty", platforms:{xbox:true,playstation:true,pc:true,switch:false,ios:false,android:false},multiplayer:true},
+  {name:"FIFA", platforms:{xbox:true,playstation:true,pc:true,switch:true,ios:true,android:true},multiplayer:true},
+  {name:"2K", platforms:{xbox:true,playstation:true,pc:true,switch:true,ios:true,android:true},multiplayer:true},
+  {name:"Among Us", platforms:{xbox:true,playstation:true,pc:true,switch:true,ios:true,android:true},multiplayer:true},
+  {name:"Fortnite", platforms:{xbox:true,playstation:true,pc:true,switch:true,ios:true,android:true},multiplayer:true},
+  {name:"Roblox", platforms:{xbox:true,playstation:false,pc:true,switch:false,ios:true,android:true},multiplayer:true},
+  {name:"PUBG", platforms:{xbox:true,playstation:true,pc:true,switch:false,ios:true,android:true},multiplayer:true},
+  {name:"Pokemon Go", platforms:{xbox:false,playstation:false,pc:false,switch:false,ios:true,android:true},multiplayer:true},
+  {name:"Subway Surfers", platforms:{xbox:false,playstation:false,pc:false,switch:false,ios:true,android:true},multiplayer:false},
+  {name:"Clash of Clans", platforms:{xbox:false,playstation:false,pc:false,switch:false,ios:true,android:true},multiplayer:true},
+  {name:"Terraria", platforms:{xbox:true,playstation:true,pc:true,switch:true,ios:true,android:true},multiplayer:true},
+  {name:"Animal Crossing", platforms:{xbox:false,playstation:false,pc:false,switch:true,ios:false,android:false},multiplayer:true},
+  {name:"The Sims", platforms:{xbox:true,playstation:true,pc:true,switch:true,ios:false,android:false},multiplayer:true},
+  {name:"Candy Crush Saga", platforms:{xbox:false,playstation:false,pc:false,switch:false,ios:true,android:true},multiplayer:false},
+  // ... Add more up to 100 if needed
+];
+
+// ====== Questions ======
+const questionsList = [
+  "xbox","playstation","pc","switch","ios","android","mobile","console","multiplayer",
+  "singlePlayer","coOp","onlineMultiplayer","firstPerson","thirdPerson","casual","competitive",
+  "racing","puzzle","adventure","strategy","shooter","survival","sandbox","mobileFriendly",
+  "freeToPlay","storyDriven","familyFriendly","requiresInternet"
+];
+
+// ====== DOM ======
+const startPage = document.getElementById("startPage");
+const gamePage = document.getElementById("gamePage");
+const questionSelect = document.getElementById("questionSelect");
+questionsList.forEach(q=>{
+  const opt=document.createElement("option");
+  opt.value=q; opt.textContent=q; questionSelect.appendChild(opt);
+});
+const logUL = document.getElementById("log");
+
+function log(msg){ const li=document.createElement("li"); li.textContent=msg; logUL.appendChild(li); logUL.scrollTop=logUL.scrollHeight; }
+
+let secretGame=null;
+let questionsAsked=0;
+
+// ====== Start Game ======
+document.getElementById("startBtn").addEventListener("click",()=>{
+  secretGame = games[Math.floor(Math.random()*games.length)];
+  questionsAsked=0;
+  startPage.style.display="none";
+  gamePage.style.display="block";
+  logUL.innerHTML="";
+  log("🎮 Game started! Ask yes/no questions.");
+});
+
+// ====== Ask Question ======
+function askQuestion(){
+  if(!secretGame){ alert("Start the game first!"); return; }
+  const q=questionSelect.value;
+  questionsAsked++;
+  let answer="No";
+  if(q==="multiplayer") answer=secretGame.multiplayer?"Yes":"No";
+  else if(q==="mobile") answer=(secretGame.platforms.ios||secretGame.platforms.android)?"Yes":"No";
+  else if(q==="console") answer=(secretGame.platforms.xbox||secretGame.platforms.playstation||secretGame.platforms.switch)?"Yes":"No";
+  else if(secretGame.platforms[q]) answer="Yes";
+  log(`❓ Q${questionsAsked}: ${q} → ${answer}`);
+}
+
+// ====== Make Guess ======
+function makeGuess(){
+  if(!secretGame){ alert("Start the game first!"); return; }
+  const guess=document.getElementById("guessInput").value.trim();
+  if(!guess) return;
+  document.getElementById("guessInput").value="";
+  if(guess.toLowerCase()===secretGame.name.toLowerCase()){
+    log(`✅ CORRECT! It was 🎉 ${secretGame.name}`);
+    log(`🏆 You won in ${questionsAsked} questions`);
+  }else{
+    log(`❌ Guess: ${guess}`);
+  }
+}
+
+// ====== Give Up ======
+function giveUp(){
+  if(!secretGame){ alert("Start the game first!"); return; }
+  log(`🏳️ Gave up! The game was 🎯 ${secretGame.name}`);
+  log(`Questions asked: ${questionsAsked}`);
+}
+</script>
+
+</body>
+</html>
