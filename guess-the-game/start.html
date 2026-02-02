@@ -1,0 +1,23 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <title>🎮 Guess The Game 🎮</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { background:#1e90ff; color:white; font-family:Arial,sans-serif; text-align:center; padding:20px;}
+    button { font-size:24px; padding:20px; margin-top:20px; border-radius:12px; border:none; cursor:pointer; background:#ffcc00; color:#000; }
+    h1 { font-size:36px; margin-top:50px;}
+  </style>
+</head>
+<body>
+<h1>🎮 Guess The Game 🎮</h1>
+<button onclick="startGame()">🚀 Start Game</button>
+
+<script>
+function startGame() {
+  sessionStorage.setItem("gameStarted", "true");
+  window.location.href = "game.html";
+}
+</script>
+</body>
+</html>
