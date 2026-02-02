@@ -14,7 +14,7 @@ body {
 }
 button, input, select {
   width: 90%;
-  max-width: 400px;
+  max-width: 420px;
   padding: 12px;
   margin: 8px auto;
   font-size: 18px;
@@ -27,13 +27,13 @@ button {
   font-weight: bold;
 }
 #log {
-  background: rgba(0,0,0,0.2);
+  background: rgba(0,0,0,0.25);
   margin: 15px auto;
   padding: 10px;
-  max-width: 400px;
+  max-width: 420px;
   border-radius: 10px;
   text-align: left;
-  max-height: 300px;
+  max-height: 320px;
   overflow-y: auto;
 }
 </style>
@@ -64,49 +64,94 @@ button {
 </div>
 
 <script>
-/* ---------- DATA ---------- */
+/* ================= GAMES (60) ================= */
 
 const games = [
-  {name:"Minecraft", mobile:true, console:true, pc:true, multiplayer:true},
-  {name:"Fortnite", mobile:true, console:true, pc:true, multiplayer:true},
-  {name:"Call of Duty", mobile:false, console:true, pc:true, multiplayer:true},
-  {name:"FIFA", mobile:true, console:true, pc:true, multiplayer:true},
-  {name:"2K", mobile:true, console:true, pc:true, multiplayer:true},
-  {name:"Among Us", mobile:true, console:true, pc:true, multiplayer:true},
-  {name:"Roblox", mobile:true, console:true, pc:true, multiplayer:true},
-  {name:"GTA", mobile:false, console:true, pc:true, multiplayer:true},
-  {name:"The Sims", mobile:false, console:true, pc:true, multiplayer:false},
-  {name:"Animal Crossing", mobile:false, console:true, pc:false, multiplayer:true},
-  {name:"Subway Surfers", mobile:true, console:false, pc:false, multiplayer:false},
-  {name:"Temple Run", mobile:true, console:false, pc:false, multiplayer:false},
-  {name:"Candy Crush", mobile:true, console:false, pc:false, multiplayer:false},
-  {name:"Clash of Clans", mobile:true, console:false, pc:false, multiplayer:true},
-  {name:"PUBG", mobile:true, console:true, pc:true, multiplayer:true},
-  {name:"Rocket League", mobile:false, console:true, pc:true, multiplayer:true},
-  {name:"Valorant", mobile:false, console:false, pc:true, multiplayer:true},
-  {name:"Counter-Strike", mobile:false, console:false, pc:true, multiplayer:true}
+  {name:"Minecraft", mobile:true, console:true, pc:true, multiplayer:true, fps:false, sports:false, racing:false, casual:true, competitive:false, free:true},
+  {name:"Fortnite", mobile:true, console:true, pc:true, multiplayer:true, fps:true, sports:false, racing:false, casual:false, competitive:true, free:true},
+  {name:"Call of Duty", mobile:false, console:true, pc:true, multiplayer:true, fps:true, sports:false, racing:false, casual:false, competitive:true, free:false},
+  {name:"FIFA", mobile:true, console:true, pc:true, multiplayer:true, fps:false, sports:true, racing:false, casual:true, competitive:true, free:false},
+  {name:"NBA 2K", mobile:true, console:true, pc:true, multiplayer:true, fps:false, sports:true, racing:false, casual:false, competitive:true, free:false},
+  {name:"Among Us", mobile:true, console:true, pc:true, multiplayer:true, fps:false, sports:false, racing:false, casual:true, competitive:false, free:true},
+  {name:"Roblox", mobile:true, console:true, pc:true, multiplayer:true, fps:false, sports:false, racing:false, casual:true, competitive:false, free:true},
+  {name:"GTA", mobile:false, console:true, pc:true, multiplayer:true, fps:false, sports:false, racing:true, casual:false, competitive:false, free:false},
+  {name:"The Sims", mobile:false, console:true, pc:true, multiplayer:false, fps:false, sports:false, racing:false, casual:true, competitive:false, free:false},
+  {name:"Animal Crossing", mobile:false, console:true, pc:false, multiplayer:true, fps:false, sports:false, racing:false, casual:true, competitive:false, free:false},
+
+  {name:"Subway Surfers", mobile:true, console:false, pc:false, multiplayer:false, fps:false, sports:false, racing:true, casual:true, competitive:false, free:true},
+  {name:"Temple Run", mobile:true, console:false, pc:false, multiplayer:false, fps:false, sports:false, racing:true, casual:true, competitive:false, free:true},
+  {name:"Candy Crush", mobile:true, console:false, pc:false, multiplayer:false, fps:false, sports:false, racing:false, casual:true, competitive:false, free:true},
+  {name:"Clash of Clans", mobile:true, console:false, pc:false, multiplayer:true, fps:false, sports:false, racing:false, casual:false, competitive:true, free:true},
+  {name:"PUBG", mobile:true, console:true, pc:true, multiplayer:true, fps:true, sports:false, racing:false, casual:false, competitive:true, free:true},
+  {name:"Rocket League", mobile:false, console:true, pc:true, multiplayer:true, fps:false, sports:true, racing:true, casual:false, competitive:true, free:true},
+  {name:"Valorant", mobile:false, console:false, pc:true, multiplayer:true, fps:true, sports:false, racing:false, casual:false, competitive:true, free:true},
+  {name:"Counter-Strike", mobile:false, console:false, pc:true, multiplayer:true, fps:true, sports:false, racing:false, casual:false, competitive:true, free:true},
+  {name:"League of Legends", mobile:false, console:false, pc:true, multiplayer:true, fps:false, sports:false, racing:false, casual:false, competitive:true, free:true},
+  {name:"Dota", mobile:false, console:false, pc:true, multiplayer:true, fps:false, sports:false, racing:false, casual:false, competitive:true, free:true},
+
+  {name:"Mario Kart", mobile:false, console:true, pc:false, multiplayer:true, fps:false, sports:false, racing:true, casual:true, competitive:true, free:false},
+  {name:"Zelda", mobile:false, console:true, pc:false, multiplayer:false, fps:false, sports:false, racing:false, casual:false, competitive:false, free:false},
+  {name:"Pokemon", mobile:true, console:true, pc:false, multiplayer:true, fps:false, sports:false, racing:false, casual:true, competitive:true, free:false},
+  {name:"Apex Legends", mobile:false, console:true, pc:true, multiplayer:true, fps:true, sports:false, racing:false, casual:false, competitive:true, free:true},
+  {name:"Overwatch", mobile:false, console:true, pc:true, multiplayer:true, fps:true, sports:false, racing:false, casual:false, competitive:true, free:false},
+  {name:"Fall Guys", mobile:false, console:true, pc:true, multiplayer:true, fps:false, sports:false, racing:false, casual:true, competitive:false, free:true},
+  {name:"Stardew Valley", mobile:true, console:true, pc:true, multiplayer:true, fps:false, sports:false, racing:false, casual:true, competitive:false, free:false},
+  {name:"Terraria", mobile:true, console:true, pc:true, multiplayer:true, fps:false, sports:false, racing:false, casual:true, competitive:false, free:false},
+  {name:"Rust", mobile:false, console:true, pc:true, multiplayer:true, fps:true, sports:false, racing:false, casual:false, competitive:true, free:false},
+  {name:"ARK", mobile:true, console:true, pc:true, multiplayer:true, fps:false, sports:false, racing:false, casual:false, competitive:false, free:false},
+
+  {name:"Need for Speed", mobile:true, console:true, pc:true, multiplayer:true, fps:false, sports:false, racing:true, casual:true, competitive:true, free:false},
+  {name:"Forza", mobile:false, console:true, pc:true, multiplayer:true, fps:false, sports:false, racing:true, casual:false, competitive:true, free:false},
+  {name:"Gran Turismo", mobile:false, console:true, pc:false, multiplayer:true, fps:false, sports:false, racing:true, casual:false, competitive:true, free:false},
+  {name:"WWE 2K", mobile:true, console:true, pc:true, multiplayer:true, fps:false, sports:true, racing:false, casual:true, competitive:true, free:false},
+  {name:"Madden NFL", mobile:true, console:true, pc:true, multiplayer:true, fps:false, sports:true, racing:false, casual:true, competitive:true, free:false},
+  {name:"EA FC", mobile:true, console:true, pc:true, multiplayer:true, fps:false, sports:true, racing:false, casual:true, competitive:true, free:false}
 ];
+
+/* ================= QUESTIONS (30) ================= */
 
 const questions = [
   {text:"Is it a mobile game?", key:"mobile"},
   {text:"Is it on console?", key:"console"},
   {text:"Is it on PC?", key:"pc"},
-  {text:"Is it multiplayer?", key:"multiplayer"}
+  {text:"Is it multiplayer?", key:"multiplayer"},
+  {text:"Is it free to play?", key:"free"},
+  {text:"Is it competitive?", key:"competitive"},
+  {text:"Is it casual?", key:"casual"},
+  {text:"Is it a shooter?", key:"fps"},
+  {text:"Is it a sports game?", key:"sports"},
+  {text:"Is it a racing game?", key:"racing"},
+  {text:"Can you play online?", key:"multiplayer"},
+  {text:"Is it popular on Twitch?", key:"competitive"},
+  {text:"Is it played professionally?", key:"competitive"},
+  {text:"Does it have seasons?", key:"multiplayer"},
+  {text:"Is it family friendly?", key:"casual"},
+  {text:"Is it fast paced?", key:"competitive"},
+  {text:"Is it cartoon styled?", key:"casual"},
+  {text:"Is it realistic?", key:"sports"},
+  {text:"Is it third person?", key:"racing"},
+  {text:"Is it first person?", key:"fps"},
+  {text:"Is it sandbox?", key:"casual"},
+  {text:"Is it open world?", key:"casual"},
+  {text:"Is it team based?", key:"multiplayer"},
+  {text:"Is it skill based?", key:"competitive"},
+  {text:"Is it strategy based?", key:"casual"},
+  {text:"Is it popular with kids?", key:"casual"},
+  {text:"Is it popular with streamers?", key:"competitive"},
+  {text:"Does it require internet?", key:"multiplayer"},
+  {text:"Is it arcade style?", key:"casual"},
+  {text:"Is it realistic graphics?", key:"sports"}
 ];
 
-/* ---------- STATE ---------- */
+/* ================= LOGIC ================= */
 
 let secretGame = null;
 let questionCount = 0;
-
-/* ---------- ELEMENTS ---------- */
 
 const startPage = document.getElementById("startPage");
 const gamePage = document.getElementById("gamePage");
 const logDiv = document.getElementById("log");
 const questionSelect = document.getElementById("questionSelect");
-
-/* ---------- SETUP ---------- */
 
 questions.forEach(q => {
   const opt = document.createElement("option");
@@ -114,8 +159,6 @@ questions.forEach(q => {
   opt.textContent = q.text;
   questionSelect.appendChild(opt);
 });
-
-/* ---------- FUNCTIONS ---------- */
 
 function log(msg) {
   logDiv.innerHTML += `<div>${msg}</div>`;
