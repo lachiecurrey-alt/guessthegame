@@ -130,6 +130,27 @@ const questions = [
   "Is it played worldwide?"
 ];
 
+  /* ---------- LEADERBOARD ---------- */
+function getScores(){
+  return JSON.parse(localStorage.getItem("gtg_scores")||"[]");
+}
+function saveScore(name,questions){
+  const scores=getScores();
+  scores.push({name,questions});
+  scores.sort((a,b)=>a.questions-b.questions);
+  localStorage.setItem("gtg_scores",JSON.stringify(scores));
+  renderLeaderboard();
+}
+function renderLeaderboard(){
+  const scores=getScores();
+  leaderboardDiv.innerHTML = scores.length
+    ? scores.map((s,i)=>`${i+1}. ${s.name} - ${s.questions} questions`).join("<br>")
+    : "No scores yet";
+}
+function clearLeaderboard(){
+  localStorage.removeItem("gtg_scores");
+  renderLeaderboard();
+}
 /* ================= LOGIC ================= */
 
 let secretGame = null;
