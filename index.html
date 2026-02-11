@@ -2,108 +2,151 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>💖 Valentine 💖</title>
+<title>🎮 Guess The Game</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-  body {
-    margin: 0;
-    height: 100vh;
-    background: linear-gradient(135deg, #ff9a9e, #fad0c4);
-    font-family: "Arial Rounded MT Bold", Arial, sans-serif;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    text-align: center;
-  }
-
-  .card {
-    background: rgba(255, 255, 255, 0.15);
-    padding: 30px;
-    border-radius: 20px;
-    width: 90%;
-    max-width: 420px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-  }
-
-  h1 {
-    font-size: 60px;
-    margin: 0;
-  }
-
-  h2 {
-    font-size: 26px;
-    margin: 20px 0;
-  }
-
-  button {
-    padding: 14px 20px;
-    font-size: 18px;
-    border: none;
-    border-radius: 12px;
-    cursor: pointer;
-    margin: 10px;
-    transition: all 0.3s ease;
-  }
-
-  #yesBtn {
-    background: #ff4d6d;
-    color: white;
-  }
-
-  #noBtn {
-    background: #444;
-    color: white;
-  }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #1e90ff;
+  color: white;
+  text-align: center;
+}
+button, input, select {
+  width: 90%;
+  max-width: 440px;
+  padding: 12px;
+  margin: 8px auto;
+  font-size: 17px;
+  border-radius: 10px;
+  border: none;
+}
+button {
+  background: #ffcc00;
+  color: black;
+  font-weight: bold;
+}
+#log, #leaderboard {
+  background: rgba(0,0,0,0.25);
+  margin: 15px auto;
+  padding: 10px;
+  max-width: 440px;
+  border-radius: 10px;
+  text-align: left;
+}
 </style>
 </head>
 
 <body>
 
-<div class="card" id="card">
-  <h1>💖</h1>
-  <h2 id="question">Will you be my Valentine?</h2>
+<div id="startPage">
+  <h1>🎮 Guess The Game 🎮</h1>
+  <button id="startBtn">🚀 Start Game</button>
+</div>
 
-  <div>
-    <button id="yesBtn">Yes 💕</button>
-    <button id="noBtn">No 🙃</button>
-  </div>
+<div id="gamePage" style="display:none;">
+  <select id="questionSelect"></select>
+  <button id="askBtn">❓ Ask Question</button>
+
+  <input id="guessInput" placeholder="Type your guess">
+  <button id="guessBtn">🎯 Guess</button>
+
+  <button id="giveUpBtn">🏳️ Give Up</button>
+
+  <div id="log"></div>
+
+  <h3>🏆 Leaderboard</h3>
+  <div id="leaderboard"></div>
+  <button onclick="clearLeaderboard()">🗑 Clear Leaderboard</button>
 </div>
 
 <script>
-let noCount = 0;
+/* ---------- GAMES (shortened for clarity) ---------- */
+const games = ["Minecraft","Fortnite","FIFA","Call of Duty","Among Us","Roblox"]
+.map(name => ({ name, multiplayer:true }));
 
-const noTexts = [
-  "Are you sure?",
-  "Are you REALLY sure?",
-  "Like… super sure?",
-  "This is getting suspicious 😳",
-  "Last chance 😭",
-  "Okay now you’re just teasing"
+/* ---------- QUESTIONS ---------- */
+const questions = [
+  {text:"Is it multiplayer?", key:"multiplayer"}
 ];
 
-const yesBtn = document.getElementById("yesBtn");
-const noBtn = document.getElementById("noBtn");
-const question = document.getElementById("question");
-const card = document.getElementById("card");
+/* ---------- STATE ---------- */
+let secretGame = null;
+let questionCount = 0;
 
-noBtn.onclick = () => {
-  noCount++;
+/* ---------- ELEMENTS ---------- */
+const startPage = document.getElementById("startPage");
+const gamePage = document.getElementById("gamePage");
+const logDiv = document.getElementById("log");
+const leaderboardDiv = document.getElementById("leaderboard");
+const questionSelect = document.getElementById("questionSelect");
 
-  // Change text
-  question.textContent = noTexts[Math.min(noCount - 1, noTexts.length - 1)];
+/* ---------- SETUP ---------- */
+questions.forEach(q=>{
+  const opt=document.createElement("option");
+  opt.value=q.key;
+  opt.textContent=q.text;
+  questionSelect.appendChild(opt);
+});
 
-  // Make YES button bigger
-  const scale = 1 + noCount * 0.2;
-  yesBtn.style.transform = `scale(${scale})`;
+/* ---------- LEADERBOARD ---------- */
+function getScores(){
+  return JSON.parse(localStorage.getItem("gtg_scores")||"[]");
+}
+function saveScore(name,questions){
+  const scores=getScores();
+  scores.push({name,questions});
+  scores.sort((a,b)=>a.questions-b.questions);
+  localStorage.setItem("gtg_scores",JSON.stringify(scores));
+  renderLeaderboard();
+}
+function renderLeaderboard(){
+  const scores=getScores();
+  leaderboardDiv.innerHTML = scores.length
+    ? scores.map((s,i)=>`${i+1}. ${s.name} - ${s.questions} questions`).join("<br>")
+    : "No scores yet";
+}
+function clearLeaderboard(){
+  localStorage.removeItem("gtg_scores");
+  renderLeaderboard();
+}
+
+/* ---------- GAME LOGIC ---------- */
+function log(msg){
+  logDiv.innerHTML+=`<div>${msg}</div>`;
+  logDiv.scrollTop=logDiv.scrollHeight;
+}
+
+document.getElementById("startBtn").onclick=()=>{
+  secretGame=games[Math.floor(Math.random()*games.length)];
+  questionCount=0;
+  logDiv.innerHTML="";
+  startPage.style.display="none";
+  gamePage.style.display="block";
+  renderLeaderboard();
+  log("🎮 Game started!");
 };
 
-yesBtn.onclick = () => {
-  card.innerHTML = `
-    <h1>🥰💖🥰</h1>
-    <h2>YAYYY!! 💕</h2>
-    <p style="font-size:20px;">You just made my day 💘</p>
-  `;
+document.getElementById("askBtn").onclick=()=>{
+  questionCount++;
+  log(`❓ Question ${questionCount}`);
+};
+
+document.getElementById("guessBtn").onclick=()=>{
+  const guess=document.getElementById("guessInput").value.trim();
+  if(!guess) return;
+  if(guess.toLowerCase()===secretGame.name.toLowerCase()){
+    log(`✅ Correct! It was ${secretGame.name}`);
+    const name=prompt("🏆 Enter your name:");
+    if(name) saveScore(name,questionCount);
+  }else{
+    log(`❌ Guess: ${guess}`);
+  }
+  document.getElementById("guessInput").value="";
+};
+
+document.getElementById("giveUpBtn").onclick=()=>{
+  log(`🏳️ Gave up! The game was ${secretGame.name}`);
 };
 </script>
 
