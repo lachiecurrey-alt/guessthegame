@@ -2,218 +2,108 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>🎮 Guess The Game</title>
+<title>💖 Valentine 💖</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #1e90ff;
-  color: white;
-  text-align: center;
-}
-button, input, select {
-  width: 90%;
-  max-width: 440px;
-  padding: 12px;
-  margin: 8px auto;
-  font-size: 17px;
-  border-radius: 10px;
-  border: none;
-}
-button {
-  background: #ffcc00;
-  color: black;
-  font-weight: bold;
-}
-#log {
-  background: rgba(0,0,0,0.25);
-  margin: 15px auto;
-  padding: 10px;
-  max-width: 440px;
-  border-radius: 10px;
-  text-align: left;
-  max-height: 320px;
-  overflow-y: auto;
-}
+  body {
+    margin: 0;
+    height: 100vh;
+    background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+    font-family: "Arial Rounded MT Bold", Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    text-align: center;
+  }
+
+  .card {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 30px;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 420px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  }
+
+  h1 {
+    font-size: 60px;
+    margin: 0;
+  }
+
+  h2 {
+    font-size: 26px;
+    margin: 20px 0;
+  }
+
+  button {
+    padding: 14px 20px;
+    font-size: 18px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    margin: 10px;
+    transition: all 0.3s ease;
+  }
+
+  #yesBtn {
+    background: #ff4d6d;
+    color: white;
+  }
+
+  #noBtn {
+    background: #444;
+    color: white;
+  }
 </style>
 </head>
 
 <body>
 
-<div id="startPage">
-  <h1>🎮 Guess The Game 🎮</h1>
-  <p>Ask yes/no questions and guess the game!</p>
-  <button id="startBtn">🚀 Start Game</button>
-</div>
+<div class="card" id="card">
+  <h1>💖</h1>
+  <h2 id="question">Will you be my Valentine?</h2>
 
-<div id="gamePage" style="display:none;">
-  <h2>🎯 Game Started</h2>
-
-  <select id="questionSelect"></select>
-  <button id="askBtn">❓ Ask Question</button>
-
-  <input id="guessInput" placeholder="Type your guess">
-  <button id="guessBtn">🎯 Guess</button>
-
-  <button id="giveUpBtn">🏳️ Give Up</button>
-
-  <div id="log"></div>
+  <div>
+    <button id="yesBtn">Yes 💕</button>
+    <button id="noBtn">No 🙃</button>
+  </div>
 </div>
 
 <script>
-/* ================= 100 GAMES ================= */
+let noCount = 0;
 
-const games = [
-  "Minecraft","Fortnite","Call of Duty","FIFA","NBA 2K","Among Us","Roblox","GTA",
-  "The Sims","Animal Crossing","Subway Surfers","Temple Run","Candy Crush",
-  "Clash of Clans","PUBG","Rocket League","Valorant","Counter-Strike",
-  "League of Legends","Dota","Mario Kart","Zelda","Pokemon","Apex Legends",
-  "Overwatch","Fall Guys","Stardew Valley","Terraria","Rust","ARK",
-  "Need for Speed","Forza","Gran Turismo","WWE 2K","Madden NFL","EA FC",
-  "Assassin’s Creed","Far Cry","Red Dead Redemption","Skyrim","Fallout",
-  "Cyberpunk","Elden Ring","Dark Souls","God of War","Spider-Man",
-  "Horizon","The Witcher","Halo","Gears of War","Battlefield",
-  "Destiny","Rainbow Six","Diablo","World of Warcraft","Hearthstone",
-  "Clash Royale","Brawl Stars","Angry Birds","Fruit Ninja","Jetpack Joyride",
-  "Geometry Dash","Bloons TD","Plants vs Zombies","Pokémon Go",
-  "Monument Valley","Dead Cells","Hades","Cuphead","Celeste",
-  "Undertale","Among Trees","Slay the Spire","Phasmophobia",
-  "The Forest","Valheim","Sea of Thieves","No Man’s Sky",
-  "Pokémon Unite","Smash Bros","Tekken","Street Fighter","Mortal Kombat",
-  "Tony Hawk","Just Dance","Beat Saber","Guitar Hero","Rock Band"
-].map(name => ({
-  name,
-  mobile: /Surfers|Run|Candy|Clash|Angry|Fruit|Jetpack|Geometry|Bloons|Plants|Go|Brawl|Royale/.test(name),
-  console: !/Go|Angry|Fruit|Jetpack/.test(name),
-  pc: !/Go|Angry|Fruit|Jetpack/.test(name),
-  multiplayer: !/Valley|Undertale|Celeste|Cuphead|Monument/.test(name),
-  fps: /Call of Duty|Valorant|Counter|Halo|Battlefield|Rainbow|Destiny/.test(name),
-  sports: /FIFA|NBA|Madden|WWE|Tony Hawk/.test(name),
-  racing: /Kart|Need for Speed|Forza|Gran Turismo/.test(name),
-  casual: /Candy|Run|Surfers|Dance|Beat|Fruit|Angry/.test(name),
-  competitive: /Valorant|Counter|League|Dota|FIFA|NBA|Rocket/.test(name),
-  free: /Fortnite|Roblox|Valorant|League|Dota|Apex|PUBG|Go|Brawl/.test(name)
-}));
-
-/* ================= 65 QUESTIONS ================= */
-
-const questions = [
-  "Is it a mobile game?","Is it on console?","Is it on PC?","Is it multiplayer?",
-  "Is it free to play?","Is it competitive?","Is it casual?",
-  "Is it a shooter?","Is it a sports game?","Is it a racing game?",
-  "Is it popular on Twitch?","Is it played professionally?",
-  "Does it have online modes?","Is it family friendly?",
-  "Is it fast paced?","Is it cartoon styled?",
-  "Is it realistic looking?","Is it open world?",
-  "Is it sandbox style?","Is it story driven?",
-  "Is it skill based?","Is it team based?",
-  "Is it first person?","Is it third person?",
-  "Is it fantasy themed?","Is it sci-fi themed?",
-  "Is it battle royale?","Is it co-op?",
-  "Is it grindy?","Is it relaxing?",
-  "Is it hard?","Is it easy to learn?",
-  "Is it popular with kids?","Is it popular with adults?",
-  "Does it require internet?","Is it arcade style?",
-  "Is it competitive esports?","Is it strategy based?",
-  "Is it turn based?","Is it real world based?",
-  "Is it single player focused?","Is it survival based?",
-  "Is crafting involved?","Is it role-playing?",
-  "Is it indie?","Is it AAA?",
-  "Is it horror themed?","Is it social?",
-  "Is it good for parties?","Is it physics based?",
-  "Is it time based?","Is it endless?",
-  "Is it music based?","Is it rhythm based?",
-  "Is it seasonal?","Is it regularly updated?",
-  "Is it popular on YouTube?","Is it competitive ranked?",
-  "Is it skill ceiling high?","Is it beginner friendly?",
-  "Is it played worldwide?"
+const noTexts = [
+  "Are you sure?",
+  "Are you REALLY sure?",
+  "Like… super sure?",
+  "This is getting suspicious 😳",
+  "Last chance 😭",
+  "Okay now you’re just teasing"
 ];
 
-  /* ---------- LEADERBOARD ---------- */
-function getScores(){
-  return JSON.parse(localStorage.getItem("gtg_scores")||"[]");
-}
-function saveScore(name,questions){
-  const scores=getScores();
-  scores.push({name,questions});
-  scores.sort((a,b)=>a.questions-b.questions);
-  localStorage.setItem("gtg_scores",JSON.stringify(scores));
-  renderLeaderboard();
-}
-function renderLeaderboard(){
-  const scores=getScores();
-  leaderboardDiv.innerHTML = scores.length
-    ? scores.map((s,i)=>`${i+1}. ${s.name} - ${s.questions} questions`).join("<br>")
-    : "No scores yet";
-}
-function clearLeaderboard(){
-  localStorage.removeItem("gtg_scores");
-  renderLeaderboard();
-}
-/* ================= LOGIC ================= */
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
+const question = document.getElementById("question");
+const card = document.getElementById("card");
 
-let secretGame = null;
-let questionCount = 0;
+noBtn.onclick = () => {
+  noCount++;
 
-const startPage = document.getElementById("startPage");
-const gamePage = document.getElementById("gamePage");
-const logDiv = document.getElementById("log");
-const questionSelect = document.getElementById("questionSelect");
+  // Change text
+  question.textContent = noTexts[Math.min(noCount - 1, noTexts.length - 1)];
 
-questions.forEach(q => {
-  const opt = document.createElement("option");
-  opt.textContent = q;
-  questionSelect.appendChild(opt);
-});
-
-function log(msg) {
-  logDiv.innerHTML += `<div>${msg}</div>`;
-  logDiv.scrollTop = logDiv.scrollHeight;
-}
-
-document.getElementById("startBtn").onclick = () => {
-  secretGame = games[Math.floor(Math.random() * games.length)];
-  questionCount = 0;
-  logDiv.innerHTML = "";
-  startPage.style.display = "none";
-  gamePage.style.display = "block";
-  log("🎮 Game started! Ask a question.");
+  // Make YES button bigger
+  const scale = 1 + noCount * 0.2;
+  yesBtn.style.transform = `scale(${scale})`;
 };
 
-document.getElementById("askBtn").onclick = () => {
-  questionCount++;
-  const text = questionSelect.value;
-  let key = "multiplayer";
-  if (text.includes("mobile")) key="mobile";
-  if (text.includes("console")) key="console";
-  if (text.includes("PC")) key="pc";
-  if (text.includes("shooter")) key="fps";
-  if (text.includes("sports")) key="sports";
-  if (text.includes("racing")) key="racing";
-  if (text.includes("competitive")) key="competitive";
-  if (text.includes("free")) key="free";
-  if (text.includes("casual")) key="casual";
-
-  const answer = secretGame[key] ? "Yes" : "No";
-  log(`❓ Q${questionCount}: ${text} → ${answer}`);
-};
-
-document.getElementById("guessBtn").onclick = () => {
-  const guess = document.getElementById("guessInput").value.trim();
-  if (!guess) return;
-  if (guess.toLowerCase() === secretGame.name.toLowerCase()) {
-    log(`✅ CORRECT! It was 🎉 ${secretGame.name}`);
-    log(`🏆 You won in ${questionCount} questions`);
-  } else {
-    log(`❌ Guess: ${guess}`);
-  }
-  document.getElementById("guessInput").value = "";
-};
-
-document.getElementById("giveUpBtn").onclick = () => {
-  log(`🏳️ You gave up! The game was 🎯 ${secretGame.name}`);
-  log(`Questions asked: ${questionCount}`);
+yesBtn.onclick = () => {
+  card.innerHTML = `
+    <h1>🥰💖🥰</h1>
+    <h2>YAYYY!! 💕</h2>
+    <p style="font-size:20px;">You just made my day 💘</p>
+  `;
 };
 </script>
 
